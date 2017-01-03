@@ -1,4 +1,4 @@
-<% include ./partials/header %>
+<% include ../partials/header %>
 
 <div class="container">
 	<h1><%= place.name %></h1>
@@ -46,24 +46,25 @@
 			<hr>
 
 			<div class="well">
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
-				<hr>
-				<p>Review</p>
+				<% if (place.reviews.length === 0) { %>
+					<p>No reviews yet</p>
+				<% } else { %>
+					<% for (var i = 0; i < place.reviews.length; i++) { %>
+						<p><%= place.reviews[i].rating %> / 5 stars</p>
+						<p><%= place.reviews[i].content %></p>
+						<p>- by <%= place.reviews[i].author %></p>
+						<a class="btn btn-xs btn-warning" href="/places/<%= place._id %>/reviews/<%= place.reviews[i]._id %>/edit">Edit</a>
+						<form class="delete-form" action="/places/<%= place._id %>/reviews/<%= place.reviews[i]._id %>?_method=DELETE" method="POST">
+							<button class="btn btn-xs btn-danger">Delete</button>
+						</form>
+						<% if (i < place.reviews.length - 1) { %>
+							<hr>
+						<% } %>
+					<% } %>
+				<% } %>
 			</div>
 		</div>
 	</div>
 </div>
 
-<% include ./partials/footer %>
+<% include ../partials/footer %>
