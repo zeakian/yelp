@@ -1,0 +1,30 @@
+body {
+	padding-top: 65px; /*so content not covered by navbar*/
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 700;
+}
+
+.form-center {
+	width: 40%;
+	margin: 25px auto;
+	text-align: center;
+}
+
+.low-weight {
+	font-weight: 400;
+}
+
+.float-right {
+	float: right;
+}
+
+.inline {
+	display: inline;
+}
+
+.delete-form {
+	display: inline;
+}

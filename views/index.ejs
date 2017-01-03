@@ -1,0 +1,36 @@
+<% include ./partials/header %>
+
+<div class="container">
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Places</h1>
+			<p>Reviews of places by real people</p>
+			<p>
+				<a class="btn btn-primary btn-lg" href="/places/new">Add New Place</a>
+			</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h3>Popular Places on Yelp</h3>
+		</div>
+	</div>
+	
+	<div class="row text-center">
+		<% places.forEach(function(place) { %>
+			<div class="col-md-3 col-sm-6">
+				<a href="/places/<%= place._id %>">
+					<div class="thumbnail">
+						<img src="<%= place.image %>">
+						<div class="caption">
+							<h4><%= place.name %></h4>
+						</div>
+					</div>
+				</a>
+			</div>
+		<% }); %>
+	</div>
+</div>
+
+<% include ./partials/footer %>
