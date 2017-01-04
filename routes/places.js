@@ -34,6 +34,7 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 		name: req.body.name,
 		image: req.body.image,
 		description: req.body.description,
+		rating: 0,
 		author: req.user
 	}, function(err, place) {
 		if (err) {

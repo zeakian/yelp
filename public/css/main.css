@@ -7,6 +7,14 @@ body, h1, h2, h3, h4, h5, h6 {
 	font-weight: 700;
 }
 
+footer {
+	height: 100px;
+	bottom: 0;
+	width: 100%;
+	background-color: #f8f8f8;
+	padding: 30px;
+}
+
 a:hover {
 	text-decoration: none;
 }
@@ -33,6 +41,51 @@ a:hover {
 	display: inline;
 }
 
-.thumbnail:hover {
-	background: #f8f8f8;
+.thumbnail-index:hover {
+	background: #e2e2e2;
+}
+
+.edit-delete-place-buttons {
+	margin-bottom: 20px;
+}
+
+.navbar-default .navbar-brand {
+	color: red;
+}
+
+.fa-star, .fa-star-o {
+	color: red;
+}
+
+/* Floats all images to left, even if different heights */
+/*.wrap-grid-fix {
+	display: flex;
+	flex-wrap: wrap;
+}*/
+
+.thumbnail-index {
+	height: 250px;
+}
+
+.thumbnail-index img {
+	max-width: 100%;
+	/*max-height: 80%;*/
+	height: 80%;
+	object-fit: cover;
+}
+
+.thumbnail > .img-responsive {
+	max-height: 500px;
+}
+
+.well p {
+	font-weight: 400;
+}
+
+.review-content {
+	margin-top: 10px;
+}
+
+.jumbotron {
+	background: url(../img/jumbotron-bg.jpg);
 }

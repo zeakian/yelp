@@ -8,8 +8,22 @@
 			<div class="list-group">
 				<li class="list-group-item low-weight">
 					<h4>Rating</h4>
-					<p>4.5 / 5.0 stars</p>
-					<p>273 reviews</p>
+					
+					<% if (place.rating === 0) {  %>
+						<p>No rating yet</p>
+					<% } else { %>
+						<p>						
+							<% for (var i = 0; i < Math.round(place.rating); i++) {  %>
+								<i class="fa fa-star" aria-hidden="true"></i>
+							<% } %>
+
+							<% for (var i = 0; i < 5 - Math.round(place.rating); i++) {  %>
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+							<% } %>
+						</p>
+					<% } %>
+					
+					<p><%= place.reviews.length %> reviews</p>
 				</li>
 				
 				<li class="list-group-item low-weight">
@@ -28,12 +42,18 @@
 			</div>
 
 			<!-- Only show edit and delete place buttons if current user is author of this place -->
-			<% if (user && place.author && place.author.equals(user._id)) { %>
-				<a class="btn btn-warning" href="/places/<%= place._id %>/edit">Edit</a>
-				<form class="delete-form" action="/places/<%= place._id %>?_method=DELETE" method="POST">
-					<button class="btn btn-danger">Delete</button>
-				</form>
-			<% } %>		
+			<div class="edit-delete-place-buttons">
+				<% if (user && place.author && place.author.equals(user._id)) { %>
+					<p>
+						<a class="btn btn-warning" href="/places/<%= place._id %>/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit <%= place.name %></a>
+					</p>
+					<p>
+						<form class="delete-form" action="/places/<%= place._id %>?_method=DELETE" method="POST">
+							<button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> Delete <%= place.name %></button>
+						</form>
+					</p>
+				<% } %>
+			</div>
 		</div>
 
 		<div class="col-md-9">
@@ -47,20 +67,29 @@
 
 			<hr>
 
+			<!-- Reviews -->
 			<div class="well">
 				<% if (place.reviews.length === 0) { %>
 					<p>No reviews yet</p>
 				<% } else { %>
 					<% for (var i = 0; i < place.reviews.length; i++) { %>
-						<p><%= place.reviews[i].rating %> / 5 stars</p>
-						<p><%= place.reviews[i].content %></p>
-						<p>- by <%= place.reviews[i].author.username %></p>
+						<% for (var j = 0; j < place.reviews[i].rating; j++) {  %>
+							<i class="fa fa-star" aria-hidden="true"></i>
+						<% } %>
+
+						<% for (var j = 0; j < 5 - place.reviews[i].rating; j++) {  %>
+							<i class="fa fa-star-o" aria-hidden="true"></i>
+						<% } %>
+
+						<p class="review-content"><%= place.reviews[i].content %></p>
+						<p><em>- by <%= place.reviews[i].author.username %></em></p>
 						
 						<!-- Only show edit and delete review buttons if current user is author of this review -->
 						<% if (user && place.reviews[i].author && place.reviews[i].author.id.equals(user._id)) { %>
-							<a class="btn btn-xs btn-warning" href="/places/<%= place._id %>/reviews/<%= place.reviews[i]._id %>/edit">Edit</a>
+							<a class="btn btn-xs btn-warning" href="/places/<%= place._id %>/reviews/<%= place.reviews[i]._id %>/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit review</a>
+							
 							<form class="delete-form" action="/places/<%= place._id %>/reviews/<%= place.reviews[i]._id %>?_method=DELETE" method="POST">
-								<button class="btn btn-xs btn-danger">Delete</button>
+								<button class="btn btn-xs btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> delete review</button>
 							</form>
 						<% } %>
 

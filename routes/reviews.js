@@ -27,7 +27,7 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 	// Look up place in database, add new review, then redirect to updated show page
 	
 	// 1. Look up place using id
-	Place.findById(req.params.id, function(err, place) {
+	Place.findById(req.params.id).populate("reviews").exec(function(err, place) {
 		if (err) {
 			console.log(err);
 			req.flash("error", err.message);
@@ -52,15 +52,18 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 				} else {
 					// 4. Link new review to place by reference
 					place.reviews.push(review);
+
+					// 5. Update the place's overall rating
+					place.rating = updateRating(place);
 					
-					// 5. Save place with updated review reference
+					// 6. Save place with updated review reference and rating
 					place.save(function(err, updatedPlace) {
 						if (err) {
 							console.log(err);
 							req.flash("error", err.message);
 							res.redirect("/places/" + req.params.id);
 						} else {
-							// 6. Redirect to show page updated with new review
+							// 7. Redirect to show page updated with new review and rating
 							req.flash("success", "Review added for " + updatedPlace.name + "!");
 							res.redirect("/places/" + req.params.id);
 						}
@@ -140,13 +143,24 @@ router.get("/:review_id/edit", middleware.checkReviewAuthor, function(req, res) 
 
 // PUT edit review form
 router.put("/:review_id", middleware.checkReviewAuthor, function(req, res) {
-	// Update database, then redirect to place show page
+	// Update review database, update place's overall rating, then redirect to place show page
 	Review.findByIdAndUpdate(req.params.review_id, req.body, function(err, review) {
 		if (err) {
 			console.log(err);
 			req.flash("error", err.message);
 			res.redirect("/places/" + req.params.id);
 		} else {
+			// Update the place's overall rating
+			Place.findById(req.params.id).populate("reviews").exec(function(err, place) {
+				if (err) {
+					console.log(err);
+				} else {
+					place.rating = updateRating(place);
+					place.save();
+				}
+			});
+
+			// Redirect to show page
 			req.flash("success", "Edited review!");
 			res.redirect("/places/" + req.params.id);
 		}
@@ -162,11 +176,34 @@ router.delete("/:review_id", middleware.checkReviewAuthor, function(req, res) {
 			req.flash("error", err.message);
 			res.redirect("/places/" + req.params.id);
 		} else {
+			// Update the place's overall rating
+			Place.findById(req.params.id).populate("reviews").exec(function(err, place) {
+				if (err) {
+					console.log(err);
+				} else {
+					place.rating = updateRating(place);
+					place.save();
+				}
+			});
+
 			req.flash("success", "Deleted review!");
 			res.redirect("/places/" + req.params.id);
 		}
 	});
 });
+
+// Update place's overall rating - helper function (does not save to database - need to save manually)
+function updateRating(place) {
+	var overallRating = 0;
+
+	place.reviews.forEach(function(e) {
+		overallRating += e.rating;
+	});
+
+	overallRating = overallRating / place.reviews.length;
+	
+	return overallRating;
+}
 
 module.exports = router;
 

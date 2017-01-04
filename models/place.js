@@ -10,6 +10,7 @@ var placeSchema = new mongoose.Schema({
 	name: String,
 	image: String,
 	description: String,
+	rating: Number,
 	reviews: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

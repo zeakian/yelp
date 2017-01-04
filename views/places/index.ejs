@@ -14,14 +14,15 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<h3>Popular Places on Yelp</h3>
+			<hr>
 		</div>
 	</div>
 	
-	<div class="row text-center">
+	<div class="row text-center wrap-grid-fix">
 		<% places.forEach(function(place) { %>
 			<div class="col-md-3 col-sm-6">
 				<a href="/places/<%= place._id %>">
-					<div class="thumbnail">
+					<div class="thumbnail thumbnail-index">
 						<img src="<%= place.image %>">
 						<div class="caption">
 							<h4><%= place.name %></h4>
