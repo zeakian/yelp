@@ -5,7 +5,9 @@
 // Import dependencies
 var express = require("express"),
 	router 	= express.Router(),
-	Place 	= require("../models/place");
+	passport = require("passport"),
+	Place 	= require("../models/place"),
+	middleware = require("../middleware"); // no need to specify /middleware/index.js - files named "index" are automatically required when you require the directory
 
 // Index of places
 router.get("/", function(req, res) {
@@ -21,17 +23,18 @@ router.get("/", function(req, res) {
 });
 
 // GET new place form
-router.get("/new", function(req, res) {
+router.get("/new", middleware.isLoggedIn, function(req, res) {
 	res.render("places/new");
 });
 
 // POST new place form
-router.post("/", function(req, res) {
+router.post("/", middleware.isLoggedIn, function(req, res) {
 	// Update database and redirect to places index
 	Place.create({
 		name: req.body.name,
 		image: req.body.image,
-		description: req.body.description
+		description: req.body.description,
+		author: req.user
 	}, function(err, place) {
 		if (err) {
 			console.log(err);
@@ -56,7 +59,7 @@ router.get("/:id", function(req, res) {
 });
 
 // GET edit place form
-router.get("/:id/edit", function(req, res) {
+router.get("/:id/edit", middleware.checkPlaceAuthor, function(req, res) {
 	// Look up place in database and redner edit page
 	Place.findById(req.params.id, function(err, place) {
 		if (err) {
@@ -69,7 +72,7 @@ router.get("/:id/edit", function(req, res) {
 });
 
 // PUT edit place form
-router.put("/:id", function(req, res) {
+router.put("/:id", middleware.checkPlaceAuthor, function(req, res) {
 	// Update database and redirect to show page
 	Place.findByIdAndUpdate(req.params.id, req.body, function(err, place) {
 		if (err) {
@@ -82,7 +85,7 @@ router.put("/:id", function(req, res) {
 });
 
 // DELETE place
-router.delete("/:id", function(req, res) {
+router.delete("/:id", middleware.checkPlaceAuthor, function(req, res) {
 	// Remove from database and redirect to places index
 	Place.findByIdAndRemove(req.params.id, function(err, place) {
 		if (err) {

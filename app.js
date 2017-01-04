@@ -20,6 +20,9 @@ var indexRoutes		= require("./routes/index"),
 	placeRoutes		= require("./routes/places"),
 	reviewRoutes 	= require("./routes/reviews");
 
+// Connect to database
+mongoose.connect("mongodb://localhost/yelp");
+
 // App config
 app.set("view engine", "ejs"); // So we don't need to include ".ejs" file extensions
 app.use(express.static(__dirname + "/public")); // All static files (css, client-side js, images, etc.) stored in "public" directory
@@ -50,9 +53,6 @@ app.use(function(req, res, next) {
 app.use("/", indexRoutes);
 app.use("/places", placeRoutes);
 app.use("/places/:id/reviews", reviewRoutes);
-
-// Connect to database
-mongoose.connect("mongodb://localhost/yelp");
 
 // Start server
 app.listen(3000, function() {
