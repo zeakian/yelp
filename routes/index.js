@@ -31,12 +31,14 @@ router.post("/signup", function(req, res) {
 		if (err) {
 			// 3.a. If error in signing up the new user, redirect back to sign up page
 			console.log(err);
+			req.flash("error", err.message);
 			res.redirect("/signup");
 		} else {
 			// 3.b. If succesfully signed up new user, log the user in and redirect to places index
 			// passport.authenticate takes one argument - the auth strategy (in this case, local)
 			// when passport.authenticate is called, it tries to log in the user using the req.body info
 			passport.authenticate("local")(req, res, function() {
+				req.flash("success", "Welcome to Yelp, " + user.username + "!");
 				res.redirect("/places");
 			});
 		}

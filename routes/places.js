@@ -38,8 +38,10 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 	}, function(err, place) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places");
 		} else {
+			req.flash("success", "Added " + place.name + "!");
 			res.redirect("/places");
 		}
 	});
@@ -51,7 +53,8 @@ router.get("/:id", function(req, res) {
 	Place.findById(req.params.id).populate("reviews").exec(function(err, place) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places");
 		} else {
 			res.render("places/show", {place: place});
 		}
@@ -64,7 +67,8 @@ router.get("/:id/edit", middleware.checkPlaceAuthor, function(req, res) {
 	Place.findById(req.params.id, function(err, place) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
 			res.render("places/edit", {place: place});
 		}
@@ -77,8 +81,10 @@ router.put("/:id", middleware.checkPlaceAuthor, function(req, res) {
 	Place.findByIdAndUpdate(req.params.id, req.body, function(err, place) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
+			req.flash("success", "Edited " + place.name + "!");
 			res.redirect("/places/" + req.params.id);
 		}
 	});
@@ -90,8 +96,10 @@ router.delete("/:id", middleware.checkPlaceAuthor, function(req, res) {
 	Place.findByIdAndRemove(req.params.id, function(err, place) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
+			req.flash("success", "Deleted " + place.name + "!");
 			res.redirect("/places");		
 		}
 	});

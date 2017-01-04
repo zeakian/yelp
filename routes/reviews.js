@@ -30,6 +30,8 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 	Place.findById(req.params.id, function(err, place) {
 		if (err) {
 			console.log(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
 			// 2. Create new review
 			var newReview = new Review({
@@ -45,6 +47,8 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 			newReview.save(function(err, review) {
 				if (err) {
 					console.log(err);
+					req.flash("error", err.message);
+					res.redirect("/places/" + req.params.id);
 				} else {
 					// 4. Link new review to place by reference
 					place.reviews.push(review);
@@ -53,8 +57,11 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 					place.save(function(err, updatedPlace) {
 						if (err) {
 							console.log(err);
+							req.flash("error", err.message);
+							res.redirect("/places/" + req.params.id);
 						} else {
 							// 6. Redirect to show page updated with new review
+							req.flash("success", "Review added for " + updatedPlace.name + "!");
 							res.redirect("/places/" + req.params.id);
 						}
 					});
@@ -137,8 +144,10 @@ router.put("/:review_id", middleware.checkReviewAuthor, function(req, res) {
 	Review.findByIdAndUpdate(req.params.review_id, req.body, function(err, review) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
+			req.flash("success", "Edited review!");
 			res.redirect("/places/" + req.params.id);
 		}
 	});
@@ -150,8 +159,10 @@ router.delete("/:review_id", middleware.checkReviewAuthor, function(req, res) {
 	Review.findByIdAndRemove(req.params.review_id, function(err, review) {
 		if (err) {
 			console.log(err);
-			res.send(err);
+			req.flash("error", err.message);
+			res.redirect("/places/" + req.params.id);
 		} else {
+			req.flash("success", "Deleted review!");
 			res.redirect("/places/" + req.params.id);
 		}
 	});

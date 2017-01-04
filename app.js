@@ -3,7 +3,8 @@ var express 		= require("express"),
 	app 			= express(),
 	mongoose 		= require("mongoose"),
 	bodyParser		= require("body-parser"),
-	methodOverride 	= require("method-override");
+	methodOverride 	= require("method-override"),
+	flash			= require("connect-flash");
 
 // Import auth frameworks
 var passport 		= require("passport"), // auth middleware for Node
@@ -28,6 +29,7 @@ app.set("view engine", "ejs"); // So we don't need to include ".ejs" file extens
 app.use(express.static(__dirname + "/public")); // All static files (css, client-side js, images, etc.) stored in "public" directory
 app.use(bodyParser.urlencoded({extended: true})); // So we can retrieve POST data from req.body
 app.use(methodOverride("_method")); // HTML only supports GET and POST request; methodOverride allows support for PUT, DELETE, etc.
+app.use(flash()); // So we can display flash / one-time messages - adds a flash() method to all requests (req.flash())
 
 // Auth config
 app.use(expressSession({
@@ -46,6 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 // Must come after auth config
 app.use(function(req, res, next) { 
 	res.locals.user = req.user;
+	res.locals.error = req.flash("error");
+	res.locals.success = req.flash("success");
 	next();
 });
 

@@ -23,9 +23,6 @@ middlewareObj.checkPlaceAuthor = function(req, res, next) {
 			if (err) {
 				console.log(err);
 			} else {
-				console.log(place.author);
-				console.log(req.user._id);
-
 				if (place.author.equals(req.user._id)) {
 					next();
 				} else {
