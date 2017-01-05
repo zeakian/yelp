@@ -65,6 +65,6 @@ app.get("*", function(req, res) {
 });
 
 // Start server
-app.listen(3000, function() {
-	console.log("Yelp server listening on port 3000");
+app.listen(process.env.PORT, process.env.IP, function() {
+	console.log("Yelp server listening");
 });
