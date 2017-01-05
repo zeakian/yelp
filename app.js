@@ -22,7 +22,8 @@ var indexRoutes		= require("./routes/index"),
 	reviewRoutes 	= require("./routes/reviews");
 
 // Connect to database
-mongoose.connect("mongodb://localhost/yelp");
+var dbUrl = process.env.DATABASEURL || "mongodb://localhost/yelp";
+mongoose.connect(dbUrl);
 
 // App config
 app.set("view engine", "ejs"); // So we don't need to include ".ejs" file extensions
@@ -57,6 +58,11 @@ app.use(function(req, res, next) {
 app.use("/", indexRoutes);
 app.use("/places", placeRoutes);
 app.use("/places/:id/reviews", reviewRoutes);
+
+// Catch-all route
+app.get("*", function(req, res) {
+	res.redirect("/places");
+});
 
 // Start server
 app.listen(3000, function() {

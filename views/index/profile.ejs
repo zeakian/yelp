@@ -1,0 +1,37 @@
+<% include ../partials/header %>
+
+<div class="container">
+	<h1><%= userProfile.username %>'s profile</h1>
+	<hr>
+	<div class="row">
+		<div class="col-md-6">
+			<h4><%= userProfile.username %>'s places</h4>
+			<hr>
+			<div class="list-group">
+				<% userProfile.places.forEach(function(place) { %>
+					<a href="/places/<%= place._id %>">
+						<li class="list-group-item low-weight list-group-profile">
+							<%= place.name %>
+						</li>
+					</a>
+				<% }); %>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<h4><%= userProfile.username %>'s reviews</h4>
+			<hr>
+			<div class="list-group">
+				<% userProfile.reviews.forEach(function(review) { %>
+					<a href="/places/<%= review.place %>">
+						<li class="list-group-item low-weight list-group-profile">
+							<%= review.content %>
+						</li>
+					</a>
+				<% }); %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../partials/footer %>

@@ -7,6 +7,10 @@ var mongoose = require("mongoose");
 
 // Create schema and compile into model
 var reviewSchema = new mongoose.Schema({
+	place: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Place"
+	},
 	rating: Number,
 	content: String,
 	author: {

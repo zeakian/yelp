@@ -22,6 +22,18 @@ router.get("/", function(req, res) {
 	});
 });
 
+// Search for a place
+router.get("/search", function(req, res) {
+	// Regex "i" flag - ignore case (also seems to partial match?)
+	Place.find({ name: new RegExp(req.query.name, "i") }, function(err, places) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render("places/search", {places: places, term: req.query.name});
+		}
+	});
+})
+
 // GET new place form
 router.get("/new", middleware.isLoggedIn, function(req, res) {
 	res.render("places/new");
@@ -42,8 +54,12 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 			req.flash("error", err.message);
 			res.redirect("/places");
 		} else {
-			req.flash("success", "Added " + place.name + "!");
-			res.redirect("/places");
+			// Link place to user by reference
+			req.user.places.push(place);
+			req.user.save(function(err, savedUser) {
+				req.flash("success", "Added " + place.name + "!");
+				res.redirect("/places");
+			});
 		}
 	});
 });
@@ -54,7 +70,6 @@ router.get("/:id", function(req, res) {
 	Place.findById(req.params.id).populate("reviews").exec(function(err, place) {
 		if (err) {
 			console.log(err);
-			req.flash("error", err.message);
 			res.redirect("/places");
 		} else {
 			res.render("places/show", {place: place});
@@ -107,3 +122,20 @@ router.delete("/:id", middleware.checkPlaceAuthor, function(req, res) {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

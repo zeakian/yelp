@@ -35,6 +35,7 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 		} else {
 			// 2. Create new review
 			var newReview = new Review({
+				place: place,
 				rating: req.body.rating,
 				content: req.body.content,
 				author: {
@@ -63,9 +64,13 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 							req.flash("error", err.message);
 							res.redirect("/places/" + req.params.id);
 						} else {
-							// 7. Redirect to show page updated with new review and rating
-							req.flash("success", "Review added for " + updatedPlace.name + "!");
-							res.redirect("/places/" + req.params.id);
+							// 7. Link new review to user by reference and save user
+							req.user.reviews.push(review);
+							req.user.save(function(err, savedUser) {
+								// 7. Redirect to show page updated with new review and rating
+								req.flash("success", "Review added for " + updatedPlace.name + "!");
+								res.redirect("/places/" + req.params.id);
+							});
 						}
 					});
 				}

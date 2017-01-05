@@ -1,5 +1,5 @@
 // **************************
-// Routes for Root and Auth
+// Routes for Root, Profile and Auth
 // **************************
 
 // Import dependencies
@@ -13,11 +13,31 @@ router.get("/", function(req, res) {
 	res.render("index/landing");
 });
 
+// User profile
+router.get("/user/:user_id", function(req, res) {
+	// Look up user in database
+	User.findById(req.params.user_id).populate("places").populate("reviews").exec(function(err, userProfile) {
+		if (err) {
+			console.log(err);
+			res.redirect("back");
+		} else {
+			res.render("index/profile", {userProfile: userProfile});
+		}
+	});
+});
+
+// **************************
 // Authentication
+// **************************
 
 // GET signup form
 router.get("/signup", function(req, res) {
-	res.render("index/signup");
+	// If user already logged in, redirect to places index
+	if (req.user) {
+		res.redirect("/places");
+	} else {
+		res.render("index/signup");
+	}
 });
 
 // POST signup form
@@ -47,7 +67,12 @@ router.post("/signup", function(req, res) {
 
 // GET login form
 router.get("/login", function(req, res) {
-	res.render("index/login");
+	// If user already logged in, redirect to places index
+	if (req.user) {
+		res.redirect("/places");
+	} else {
+		res.render("index/login");
+	}
 });
 
 // POST login form
